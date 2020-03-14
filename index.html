@@ -17,8 +17,8 @@ function myFunction(xml) {
 }
 
 document.getElementById("npcid").onkeyup = function() {
-	document.getElementById("output").innerHTML=
-	xmlDoc.evaluate("/list/npc[@id="+this.value+"]", xmlDoc, null, XPathResult.ANY_TYPE, null);
+	var o = xmlDoc.evaluate("/list/npc[@id="+this.value+"]", xmlDoc, null, XPathResult.ANY_TYPE, null);
+	document.getElementById("output").innerHTML = o ? o : "";
 }
 </script>
 

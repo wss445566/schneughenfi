@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html>
 <body>
-
-<input id="npcid"></input>
-<p id="demo"></p>
-
 <script>
 var xhttp = new XMLHttpRequest();
 xhttp.onreadystatechange = function() {
@@ -17,13 +13,16 @@ xhttp.send();
 
 function myFunction(xml) {
     var xmlDoc = xml.responseXML;
-    document.getElementById("demo").innerHTML = "wow"
-    //xmlDoc.getElementsByTagName("title")[0].childNodes[0].nodeValue;
+    document.getElementById("output").innerHTML = "wow"
 }
+
 document.getElementById("npcid").onkeyup = function() {
-	document.getElementById("demo").innerHTML=this.value;
+	document.getElementById("output").innerHTML=
+	xmlDoc.evaluate("/list/npc[@id="+this.value+"]", xmlDoc, null, XPathResult.ANY_TYPE, null);
 }
 </script>
 
+<input id="npcid"></input>
+<div id="output"></div>
 </body>
 </html>

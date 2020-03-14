@@ -1,28 +1,90 @@
 <!DOCTYPE html>
 <html>
+<head>
+<title></title>
+<style type="text/css" media="screen">
+	.ace_editor {
+		border: 1px solid lightgray;
+		margin: auto;
+		height: 700px;
+		width: 100%;
+	}
+	.abc {
+		display:table-cell;
+		width:100%;
+	}
+</style>
+</head>
+
 <body>
+<table width=100%>
+	<tr>
+		<td>
+			<input id="npcid1" value="35601"></input>
+		</td>
+		<td>
+			<input id="npcid2" value="35699"></input>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<pre id="output1"></pre>
+		</td>
+		<td>
+			<pre id="output2"></pre>
+		</td>
+	</tr>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/ace.min.js" type="text/javascript" charset="utf-8"></script>
 <script>
-var xhttp = new XMLHttpRequest();
-xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        myFunction(this);
-    }
-};
-xhttp.open("GET", "npcs/35600-35699.xml", true);
-xhttp.send();
-
-function myFunction(xml) {
-    var xmlDoc = xml.responseXML;
-    document.getElementById("output").innerHTML = "wow"
-}
-
-document.getElementById("npcid").onkeyup = function() {
-	var o = xmlDoc.evaluate("/list/npc[@id="+this.value+"]", xmlDoc, null, XPathResult.ANY_TYPE, null);
-	document.getElementById("output").innerHTML = o ? o : "";
-}
+	ace.config.set("basePath", "https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.8/");
+    var editor1 = ace.edit("output1", {
+		theme: "ace/theme/eclipse",
+        mode: "ace/mode/xml",
+		minLines: 20,
+		autoScrollEditorIntoView: true
+	});
+    var editor2 = ace.edit("output2", {
+		theme: "ace/theme/eclipse",
+        mode: "ace/mode/xml",
+		minLines: 20,
+		autoScrollEditorIntoView: true
+	});
 </script>
 
-<input id="npcid"></input>
-<div id="output"></div>
+<script>
+	var xhttp = new XMLHttpRequest();
+	var xmlDoc;
+
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			xmlDoc = new DOMParser().parseFromString(this.responseText, "text/xml");
+			do_keyup(editor1, document.getElementById("npcid1").value);
+			do_keyup(editor2, document.getElementById("npcid2").value);
+		}
+	};
+	xhttp.open("GET", "https://raw.githubusercontent.com/wss445566/schneughenfi/master/npcs/35600-35699.xml", true);
+	xhttp.send();
+
+	function search_npcid(v) {
+		if (xmlDoc == null) return;
+		var o = xmlDoc.evaluate("/list/npc[@id=\""+v+"\"]", xmlDoc, null, XPathResult.ANY_TYPE, null);
+		var r = (o != null) ? o.iterateNext() : null;
+		r = (r != null) ? r.outerHTML : "";
+		return r;
+	}
+	
+	function do_keyup(e, v){
+		e.setValue(search_npcid(v));
+	}
+
+	document.getElementById("npcid1").onkeyup = function(){do_keyup(editor1, this.value);};
+	document.getElementById("npcid2").onkeyup = function(){do_keyup(editor2, this.value);};
+	document.getElementById("npcid1").focus();
+</script>
+
+
 </body>
 </html>
+
